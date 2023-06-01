@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-mongoose.connect("mongodb://127.0.0.1:27017/db_test", {
+mongoose.connect("mongodb://127.0.0.1:27017/simple_api_mongoose", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
