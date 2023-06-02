@@ -1,4 +1,5 @@
-const { validationResult } = require("express-validator");
+const ProductCategoryValidation = require("../../validations/master_data/product_category_validation");
+const productCategoryValidation = new ProductCategoryValidation();
 
 const ProductCategoryService = require("../../services/master_data/product_category_service");
 const productCategoryService = new ProductCategoryService();
@@ -14,13 +15,26 @@ class ProductCategoryConntroller {
     formatResponse.sendResponse(result, res);
   };
 
+  // * Show
+  show = async (req, res) => {
+    const validation = await productCategoryValidation.show(req);
+
+    if (!validation.status) {
+      formatResponse.sendResponse(validation, res);
+      return;
+    }
+
+    const result = await productCategoryService.show(req);
+
+    formatResponse.sendResponse(result, res);
+  };
+
   // * Store
   store = async (req, res) => {
-    const validation = validationResult(req);
-    const error = validation.array()[0];
+    const validation = await productCategoryValidation.store(req);
 
-    if (error) {
-      formatResponse.validate(error, res);
+    if (!validation.status) {
+      formatResponse.sendResponse(validation, res);
       return;
     }
 

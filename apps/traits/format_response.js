@@ -1,19 +1,20 @@
 class FormatResponse {
-  validate = (error, res) => {
-    if (error) {
-      res.send({
-        status: false,
-        message: error.msg,
-        data: null,
-      });
-    }
-  };
-
   sendResponse = (result, res) => {
-    res.send({
+    let data = null;
+    let statusCode = 200;
+
+    if (result.data) {
+      data = result.data;
+    }
+
+    if (!result.status) {
+      statusCode = 422;
+    }
+
+    res.status(statusCode).send({
       status: result.status,
       message: result.message,
-      data: result.data,
+      data: data,
     });
   };
 }

@@ -5,13 +5,32 @@ class ProductCategoryService {
   index = async (req) => {
     try {
       const productCategory = await ProductCategory.paginate(
-        { name: "Tes" },
+        {},
         {
           perPage: 1,
           page: 1,
           sort: { name: "asc" },
         }
       );
+
+      const result = {
+        status: true,
+        message: "Data retrivied successfully !",
+        data: productCategory,
+      };
+
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // * Show service
+  show = async (req) => {
+    try {
+      const productCategory = await ProductCategory.findOne({
+        _id: req.query.product_category_id,
+      });
 
       const result = {
         status: true,

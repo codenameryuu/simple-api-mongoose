@@ -11,7 +11,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(upload.array());
 app.use(express.static("public"));
 
-const routes = require("./routes.js");
+const routes = require("./config/routes.js");
 app.use("/api", routes);
 
 app.listen(port, () => {

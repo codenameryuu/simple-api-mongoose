@@ -7,7 +7,7 @@ let ProductCategorySchema = new Schema(
   {
     name: {
       type: String,
-      // required: [true, "Name can't be empty"],
+      required: [true, "Name can't be empty"],
     },
     createdAt: {
       type: Date,
