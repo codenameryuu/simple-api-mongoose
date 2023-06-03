@@ -1,16 +1,33 @@
+const isset = require("isset-php");
 const ProductCategory = require("../../models/ProductCategory");
 
 class ProductCategoryService {
   // * Index service
   index = async (req) => {
     try {
+      let setting = {
+        page: 1,
+        limit: 1,
+        sort: { name: "asc" },
+      };
+
+      let conditional = {};
+
+      if (isset(() => req.query.page) && req.query.page) {
+        setting.page = parseInt(req.query.page);
+      }
+
+      if (isset(() => req.query.limit) && req.query.limit) {
+        setting.limit = parseInt(req.query.limit);
+      }
+
+      if (isset(() => req.query.search) && req.query.search) {
+        conditional.name = req.query.search;
+      }
+
       const productCategory = await ProductCategory.paginate(
-        {},
-        {
-          perPage: 1,
-          page: 1,
-          sort: { name: "asc" },
-        }
+        conditional,
+        setting
       );
 
       const result = {
@@ -29,7 +46,7 @@ class ProductCategoryService {
   show = async (req) => {
     try {
       const productCategory = await ProductCategory.findOne({
-        _id: req.query.product_category_id,
+        _id: req.params.product_category_id,
       });
 
       const result = {
@@ -57,6 +74,47 @@ class ProductCategoryService {
         status: true,
         message: "Data created successfully !",
         data: productCategory,
+      };
+
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // * Update service
+  update = async (req) => {
+    try {
+      const productCategory = await ProductCategory.findOne({
+        _id: req.params.product_category_id,
+      });
+
+      productCategory.name = req.body.name;
+
+      await productCategory.save();
+
+      const result = {
+        status: true,
+        message: "Data updated successfully !",
+        data: productCategory,
+      };
+
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // * Destroy service
+  destroy = async (req) => {
+    try {
+      await ProductCategory.deleteMany({
+        _id: req.params.product_category_id,
+      });
+
+      const result = {
+        status: true,
+        message: "Data deleted successfully !",
       };
 
       return result;

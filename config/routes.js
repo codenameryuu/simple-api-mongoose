@@ -10,9 +10,24 @@ const productCategoryConntroller = new ProductCategoryConntroller();
 router.get("/product-category", productCategoryConntroller.index);
 
 // * Show
-router.get("/product-category/show", productCategoryConntroller.show);
+router.get(
+  "/product-category/:product_category_id",
+  productCategoryConntroller.show
+);
 
 // * Store
 router.post("/product-category", productCategoryConntroller.store);
+
+// * Update
+router.put(
+  "/product-category/:product_category_id",
+  productCategoryConntroller.update
+);
+
+// * Delete
+router.delete(
+  "/product-category/:product_category_id",
+  productCategoryConntroller.destroy
+);
 
 module.exports = router;
