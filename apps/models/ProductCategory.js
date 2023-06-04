@@ -26,6 +26,14 @@ ProductCategorySchema.virtual("product", {
   justOne: false,
 });
 
+ProductCategorySchema.pre("find", function () {
+  const { withDeleted } = this.options;
+
+  if (withDeleted) {
+    delete this.getFilter().deleted;
+  }
+});
+
 ProductCategorySchema.post("save", function (data, next) {
   if (!data.created_at) {
     data.created_at = Date.now();

@@ -16,6 +16,10 @@ let ProductSchema = new Schema({
     type: Number,
     required: true,
   },
+  image: {
+    type: String,
+    required: false,
+  },
   created_at: {
     type: Date,
     required: false,
@@ -26,6 +30,10 @@ let ProductSchema = new Schema({
   },
 });
 
+ProductSchema.virtual("image_url").get(function () {
+  return "oke";
+});
+
 ProductSchema.virtual("product_category", {
   ref: "ProductCategory",
   localField: "product_category_id",
@@ -34,7 +42,7 @@ ProductSchema.virtual("product_category", {
 });
 
 ProductSchema.pre("find", function () {
-  this.populate("product_category");
+  this.populate({ path: "product_category", options: { withDeleted: true } });
 });
 
 ProductSchema.post("save", function (data, next) {
