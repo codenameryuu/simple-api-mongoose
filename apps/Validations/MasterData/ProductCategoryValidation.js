@@ -1,7 +1,7 @@
 const Joi = require("joi");
 const mongoose = require("mongoose");
 const isset = require("isset-php");
-const ProductCategory = require("../../models/ProductCategory");
+const ProductCategory = require("../../Models/ProductCategory");
 
 class ProductCategoryValidation {
   // * Index validation

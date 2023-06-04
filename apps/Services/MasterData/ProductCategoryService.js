@@ -1,5 +1,5 @@
 const isset = require("isset-php");
-const ProductCategory = require("../../models/ProductCategory");
+const ProductCategory = require("../../Models/ProductCategory");
 
 class ProductCategoryService {
   // * Index service
@@ -7,7 +7,7 @@ class ProductCategoryService {
     try {
       let setting = {
         page: 1,
-        limit: 1,
+        limit: 10,
         sort: { name: "asc" },
       };
 
@@ -108,7 +108,7 @@ class ProductCategoryService {
   // * Destroy service
   destroy = async (req) => {
     try {
-      await ProductCategory.deleteMany({
+      await ProductCategory.removeMany({
         _id: req.params.product_category_id,
       });
 

@@ -1,12 +1,19 @@
 const mongoose = require("mongoose");
 const mongoosePaginate = require("mongoose-paginate-v2");
-const softDelete = require("mongoosejs-soft-delete");
 
 const Schema = mongoose.Schema;
 
-let ProductCategorySchema = new Schema({
+let ProductSchema = new Schema({
+  product_category_id: {
+    type: String,
+    required: true,
+  },
   name: {
     type: String,
+    required: true,
+  },
+  price: {
+    type: Number,
     required: true,
   },
   created_at: {
@@ -19,14 +26,18 @@ let ProductCategorySchema = new Schema({
   },
 });
 
-ProductCategorySchema.virtual("product", {
-  ref: "Product",
-  localField: "_id",
-  foreignField: "product_category_id",
+ProductSchema.virtual("product_category", {
+  ref: "ProductCategory",
+  localField: "product_category_id",
+  foreignField: "_id",
   justOne: false,
 });
 
-ProductCategorySchema.post("save", function (data, next) {
+ProductSchema.pre("find", function () {
+  this.populate("product_category");
+});
+
+ProductSchema.post("save", function (data, next) {
   if (!data.created_at) {
     data.created_at = Date.now();
   }
@@ -38,13 +49,12 @@ ProductCategorySchema.post("save", function (data, next) {
 
 mongoose.plugin((schema) => {
   const setting = {
-    virtuals: true,
     versionKey: false,
+    virtuals: true,
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
     transform(doc, ret) {
       delete ret.id;
-      delete ret.deleted;
     },
   };
 
@@ -52,11 +62,6 @@ mongoose.plugin((schema) => {
   schema.options.toObject = setting;
 });
 
-ProductCategorySchema.plugin(mongoosePaginate);
-ProductCategorySchema.plugin(softDelete);
+ProductSchema.plugin(mongoosePaginate);
 
-module.exports = mongoose.model(
-  "ProductCategory",
-  ProductCategorySchema,
-  "product_categories"
-);
+module.exports = mongoose.model("Product", ProductSchema, "products");

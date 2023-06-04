@@ -1,10 +1,10 @@
-const ProductCategoryValidation = require("../../validations/master_data/product_category_validation");
+const ProductCategoryValidation = require("../../Validations/MasterData/ProductCategoryValidation");
 const productCategoryValidation = new ProductCategoryValidation();
 
-const ProductCategoryService = require("../../services/master_data/product_category_service");
+const ProductCategoryService = require("../../Services/MasterData/ProductCategoryService");
 const productCategoryService = new ProductCategoryService();
 
-const FormatResponse = require("../../traits/format_response");
+const FormatResponse = require("../../Traits/FormatResponse");
 const formatResponse = new FormatResponse();
 
 class ProductCategoryConntroller {
