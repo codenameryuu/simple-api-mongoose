@@ -70,13 +70,14 @@ ProductSchema.post("save", function (data, next) {
   next();
 });
 
-ProductSchema.methods.saveImage = function saveImage(req) {
+ProductSchema.methods.saveImage = function (req) {
   if (req.files && Object.keys(req.files).length !== 0) {
     const file = req.files.image;
     const rootPath = path.dirname(require.main.filename);
 
     const extName = path.extname(file.name);
-    const fileName = Date.now() + extName;
+    const fileName =
+      Date.now() + Math.random().toString(10).slice(2, 7) + extName;
     const filePath = rootPath + "/public/storage/images/product/";
 
     if (!fs.existsSync(filePath)) {
@@ -91,7 +92,7 @@ ProductSchema.methods.saveImage = function saveImage(req) {
   }
 };
 
-ProductSchema.methods.deleteImage = function deleteImage() {
+ProductSchema.methods.deleteImage = function () {
   const rootPath = path.dirname(require.main.filename);
   const filePath = rootPath + "/public/storage/images/product/" + this.image;
 

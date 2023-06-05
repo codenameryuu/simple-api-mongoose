@@ -1,21 +1,27 @@
 class FormatResponse {
-  sendResponse = (result, res) => {
+  sendResponse = (req, res) => {
     let data = null;
     let statusCode = 200;
 
-    if (result.data) {
-      data = result.data;
+    if (req.data) {
+      data = req.data;
     }
 
-    if (!result.status) {
+    if (!req.status) {
       statusCode = 422;
     }
 
-    res.status(statusCode).send({
-      status: result.status,
-      message: result.message,
+    let result = {
+      status: req.status,
+      message: req.message,
       data: data,
-    });
+    };
+
+    if (req.token) {
+      result.token = req.token;
+    }
+
+    res.status(statusCode).send(result);
   };
 }
 

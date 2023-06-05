@@ -154,6 +154,7 @@ class ProductValidation {
 
       name: Joi.string().required(),
       price: Joi.number().required(),
+      image: Joi.optional(),
     });
 
     try {
@@ -161,6 +162,7 @@ class ProductValidation {
         product_category_id: req.fields.product_category_id,
         name: req.fields.name,
         price: req.fields.price,
+        image: req.fields.image,
       };
 
       await schema.validateAsync(validate);
@@ -260,6 +262,7 @@ class ProductValidation {
 
       name: Joi.string().required(),
       price: Joi.number().required(),
+      image: Joi.optional(),
     });
 
     try {
@@ -268,6 +271,7 @@ class ProductValidation {
         product_category_id: req.fields.product_category_id,
         name: req.fields.name,
         price: req.fields.price,
+        image: req.fields.image,
       };
 
       await schema.validateAsync(validate);

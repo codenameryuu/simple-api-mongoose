@@ -1,5 +1,9 @@
 const mongoose = require("mongoose");
 let mongoosePaginate = require("mongoose-paginate-v2");
+const softDelete = require("mongoosejs-soft-delete");
+
+const path = require("path");
+const fs = require("fs");
 
 const Schema = mongoose.Schema;
 
@@ -16,7 +20,7 @@ let UserSchema = new Schema({
   password: {
     type: String,
     required: true,
-    select: false,
+    select: true,
   },
   image: {
     type: String,
@@ -30,7 +34,7 @@ let UserSchema = new Schema({
   },
 });
 
-ProductSchema.virtual("image_url").get(function () {
+UserSchema.virtual("image_url").get(function () {
   return process.env.APP_BASE_URL + "/storage/images/users/" + this.image;
 });
 
@@ -43,6 +47,41 @@ UserSchema.post("save", function (data, next) {
   data.save();
   next();
 });
+
+UserSchema.methods.toJSON = function () {
+  let data = this.toObject();
+  delete data.password;
+  return data;
+};
+
+UserSchema.methods.saveImage = function (req) {
+  if (req.files && Object.keys(req.files).length !== 0) {
+    const file = req.files.image;
+    const rootPath = path.dirname(require.main.filename);
+
+    const extName = path.extname(file.name);
+    const fileName =
+      Date.now() + Math.random().toString(10).slice(2, 7) + extName;
+    const filePath = rootPath + "/public/storage/images/user/";
+
+    if (!fs.existsSync(filePath)) {
+      fs.mkdirSync(filePath, { recursive: true });
+    }
+
+    fs.copyFile(file.path, filePath + fileName, function (err) {
+      return null;
+    });
+
+    return fileName;
+  }
+};
+
+UserSchema.methods.deleteImage = function () {
+  const rootPath = path.dirname(require.main.filename);
+  const filePath = rootPath + "/public/storage/images/user/" + this.image;
+
+  fs.unlink(filePath, (err) => {});
+};
 
 mongoose.plugin((schema) => {
   const setting = {
