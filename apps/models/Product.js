@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
 const mongoosePaginate = require("mongoose-paginate-v2");
 
+const path = require("path");
+const fs = require("fs");
+
 const Schema = mongoose.Schema;
 
 let ProductSchema = new Schema({
@@ -31,18 +34,30 @@ let ProductSchema = new Schema({
 });
 
 ProductSchema.virtual("image_url").get(function () {
-  return "oke";
+  return (
+    process.env.APP_BASE_URL + "/public/storage/images/product/" + this.image
+  );
 });
 
 ProductSchema.virtual("product_category", {
   ref: "ProductCategory",
   localField: "product_category_id",
   foreignField: "_id",
-  justOne: false,
+  justOne: true,
 });
 
 ProductSchema.pre("find", function () {
-  this.populate({ path: "product_category", options: { withDeleted: true } });
+  this.populate({
+    path: "product_category",
+    options: { withDeleted: true },
+  });
+});
+
+ProductSchema.pre("findOne", function () {
+  this.populate({
+    path: "product_category",
+    options: { withDeleted: true },
+  });
 });
 
 ProductSchema.post("save", function (data, next) {
@@ -54,6 +69,34 @@ ProductSchema.post("save", function (data, next) {
   data.save();
   next();
 });
+
+ProductSchema.methods.saveImage = function saveImage(req) {
+  if (req.files && Object.keys(req.files).length !== 0) {
+    const file = req.files.image;
+    const rootPath = path.dirname(require.main.filename);
+
+    const extName = path.extname(file.name);
+    const fileName = Date.now() + extName;
+    const filePath = rootPath + "/public/storage/images/product/";
+
+    if (!fs.existsSync(filePath)) {
+      fs.mkdirSync(filePath, { recursive: true });
+    }
+
+    fs.copyFile(file.path, filePath + fileName, function (err) {
+      return null;
+    });
+
+    return fileName;
+  }
+};
+
+ProductSchema.methods.deleteImage = function deleteImage() {
+  const rootPath = path.dirname(require.main.filename);
+  const filePath = rootPath + "/public/storage/images/product/" + this.image;
+
+  fs.unlink(filePath, (err) => {});
+};
 
 mongoose.plugin((schema) => {
   const setting = {

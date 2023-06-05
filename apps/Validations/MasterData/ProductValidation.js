@@ -158,9 +158,9 @@ class ProductValidation {
 
     try {
       const validate = {
-        product_category_id: req.body.product_category_id,
-        name: req.body.name,
-        price: req.body.price,
+        product_category_id: req.fields.product_category_id,
+        name: req.fields.name,
+        price: req.fields.price,
       };
 
       await schema.validateAsync(validate);
@@ -265,8 +265,9 @@ class ProductValidation {
     try {
       const validate = {
         product_id: req.params.product_id,
-        name: req.body.name,
-        price: req.body.price,
+        product_category_id: req.fields.product_category_id,
+        name: req.fields.name,
+        price: req.fields.price,
       };
 
       await schema.validateAsync(validate);

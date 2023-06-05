@@ -1,15 +1,17 @@
 const express = require("express");
-const bodyParser = require("body-parser");
-const multer = require("multer");
-const upload = multer();
+const dotenv = require("dotenv");
+const formidable = require("express-formidable");
 
 const app = express();
+dotenv.config();
 const port = process.env.PORT || 8000;
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(upload.array());
-app.use(express.static("public"));
+app.use(
+  formidable({
+    multiples: true,
+    keepExtensions: true,
+  })
+);
 
 const routes = require("./config/routes.js");
 app.use("/api", routes);

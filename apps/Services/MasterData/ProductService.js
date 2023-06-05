@@ -63,16 +63,26 @@ class ProductService {
     try {
       const product = new Product();
 
-      product.product_category_id = req.body.product_category_id;
-      product.name = req.body.name;
-      product.price = req.body.price;
+      product.product_category_id = req.fields.product_category_id;
+      product.name = req.fields.name;
+      product.price = req.fields.price;
+
+      const filename = product.saveImage(req);
+
+      if (filename) {
+        product.image = filename;
+      }
 
       await product.save();
+
+      const productResult = await Product.findOne({
+        _id: product.id,
+      });
 
       const result = {
         status: true,
         message: "Data created successfully !",
-        data: product,
+        data: productResult,
       };
 
       return result;
@@ -88,7 +98,16 @@ class ProductService {
         _id: req.params.product_id,
       });
 
-      product.name = req.body.name;
+      product.product_category_id = req.fields.product_category_id;
+      product.name = req.fields.name;
+      product.price = req.fields.price;
+
+      const filename = await product.saveImage(req);
+
+      if (filename) {
+        await product.deleteImage();
+        product.image = filename;
+      }
 
       await product.save();
 
@@ -107,6 +126,12 @@ class ProductService {
   // * Destroy service
   destroy = async (req) => {
     try {
+      const product = await Product.findOne({
+        _id: req.params.product_id,
+      });
+
+      await product.deleteImage();
+
       await Product.deleteMany({
         _id: req.params.product_id,
       });

@@ -34,6 +34,14 @@ ProductCategorySchema.pre("find", function () {
   }
 });
 
+ProductCategorySchema.pre("findOne", function () {
+  const { withDeleted } = this.options;
+
+  if (withDeleted) {
+    delete this.getFilter().deleted;
+  }
+});
+
 ProductCategorySchema.post("save", function (data, next) {
   if (!data.created_at) {
     data.created_at = Date.now();
@@ -46,8 +54,8 @@ ProductCategorySchema.post("save", function (data, next) {
 
 mongoose.plugin((schema) => {
   const setting = {
-    virtuals: true,
     versionKey: false,
+    virtuals: true,
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
     transform(doc, ret) {

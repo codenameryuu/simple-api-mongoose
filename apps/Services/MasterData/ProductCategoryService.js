@@ -66,7 +66,7 @@ class ProductCategoryService {
     try {
       const productCategory = new ProductCategory();
 
-      productCategory.name = req.body.name;
+      productCategory.name = req.fields.name;
 
       await productCategory.save();
 
@@ -89,7 +89,7 @@ class ProductCategoryService {
         _id: req.params.product_category_id,
       });
 
-      productCategory.name = req.body.name;
+      productCategory.name = req.fields.name;
 
       await productCategory.save();
 

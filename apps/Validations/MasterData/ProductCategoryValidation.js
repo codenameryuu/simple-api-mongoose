@@ -120,7 +120,7 @@ class ProductCategoryValidation {
 
     try {
       const validate = {
-        name: req.body.name,
+        name: req.fields.name,
       };
 
       await schema.validateAsync(validate);
@@ -188,7 +188,7 @@ class ProductCategoryValidation {
     try {
       const validate = {
         product_category_id: req.params.product_category_id,
-        name: req.body.name,
+        name: req.fields.name,
       };
 
       await schema.validateAsync(validate);

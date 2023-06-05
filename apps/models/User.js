@@ -30,6 +30,10 @@ let UserSchema = new Schema({
   },
 });
 
+ProductSchema.virtual("image_url").get(function () {
+  return process.env.APP_BASE_URL + "/storage/images/users/" + this.image;
+});
+
 UserSchema.post("save", function (data, next) {
   if (!data.created_at) {
     data.created_at = Date.now();
